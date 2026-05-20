@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -14,39 +14,24 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([
+    { id: 1, text: "Learn React" },
+    { id: 2, text: "Build a full-stack app" },
+  ]);
   const [inputValue, setInputValue] = useState("");
-
-  useEffect(() => {
-    fetch("http://localhost:5000/api/todos")
-      .then((response) => response.json())
-      .then((data) => setTodos(data));
-  }, []);
 
   const handleAddTodo = () => {
     if (!inputValue.trim()) return;
-    fetch("http://localhost:5000/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: inputValue }),
-    })
-      .then((response) => response.json())
-      .then((newTodo) => {
-        setTodos([...todos, newTodo]);
-        setInputValue("");
-      });
+    const newTodo = {
+      id: Date.now(),
+      text: inputValue,
+    };
+    setTodos([...todos, newTodo]);
+    setInputValue("");
   };
 
   const handleDeleteTodo = (id) => {
-    fetch(`http://localhost:5000/api/todos/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setTodos(todos.filter((todo) => todo.id !== id));
-        }
-      });
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   return (
